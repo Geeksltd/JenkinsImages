@@ -5,6 +5,7 @@ antisamy-markup-formatter
 apache-httpcomponents-client-4-api
 authentication-tokens
 aws-credentials
+aws-bucket-credentials
 aws-java-sdk
 azure-commons
 bouncycastle-api

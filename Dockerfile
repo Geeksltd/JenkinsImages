@@ -7,6 +7,7 @@ ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
 COPY plugins.txt plugins.txt
 RUN /usr/local/bin/install-plugins.sh < plugins.txt
 
+USER root
 # Install Docker
 RUN apt-get update && \
 apt-get -y install apt-transport-https \
@@ -24,3 +25,25 @@ apt-get -y install docker-ce
 
 # Map to the host Docker daemon
 ENV DOCKER_HOST="tcp://10.0.75.1:2375"
+
+# Install kubectl
+# Set the Kubernetes version as found in the UCP Dashboard or API
+ENV k8sversion=v1.8.11
+
+# Get the kubectl binary.
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$k8sversion/bin/linux/amd64/kubectl && \
+	chmod +x ./kubectl && \
+	sudo mv ./kubectl /usr/local/bin/kubectl
+
+# Install git
+RUN apt-get install --assume-yes git
+
+COPY ./JenkinsMetadata/config.xml .
+ONBUILD ARG PROJECT_JENKINS_GIT_URL
+ONBUILD ARG BRANCH
+ONBUILD ARG PROJECT
+ONBUILD USER root
+ONBUILD RUN mkdir -p $JENKINS_HOME/jobs/
+ONBUILD RUN mkdir -p $JENKINS_HOME/jobs/$PROJECT/
+ONBUILD RUN cp config.xml $JENKINS_HOME/jobs/$PROJECT/
+ONBUILD RUN sed -i 's/%%GIT_URL%%/%PROJECT_JENKINS_GIT_URL%/g;s/%%BRANCH%%/%BRANCH%/g;' $JENKINS_HOME/jobs/$PROJECT/config.xml

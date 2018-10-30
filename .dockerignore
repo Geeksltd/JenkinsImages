@@ -1,0 +1,6 @@
+.git\*
+.dockeringore
+dockerfile
+.gitignore
+$JENKINS_HOME\*
+JenkinsHome\*
