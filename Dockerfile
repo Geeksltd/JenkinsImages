@@ -37,13 +37,3 @@ RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$k8sversi
 
 # Install git
 RUN apt-get install --assume-yes git
-
-COPY ./JenkinsMetadata/config.xml .
-ONBUILD ARG PROJECT_JENKINS_GIT_URL
-ONBUILD ARG BRANCH
-ONBUILD ARG PROJECT
-ONBUILD USER root
-ONBUILD RUN mkdir -p $JENKINS_HOME/jobs/
-ONBUILD RUN mkdir -p $JENKINS_HOME/jobs/$PROJECT/
-ONBUILD RUN cp config.xml $JENKINS_HOME/jobs/$PROJECT/
-ONBUILD RUN sed -i 's/%%GIT_URL%%/%PROJECT_JENKINS_GIT_URL%/g;s/%%BRANCH%%/%BRANCH%/g;' $JENKINS_HOME/jobs/$PROJECT/config.xml
