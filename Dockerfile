@@ -37,3 +37,26 @@ RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$k8sversi
 
 # Install git
 RUN apt-get install --assume-yes git
+
+# Install AWS Cli
+RUN apt-get update && \
+    apt-get install -y \
+        python3 \
+        python3-pip \
+        python3-setuptools \
+        groff \
+        less \
+    && pip3 install --upgrade pip \
+    && apt-get clean
+
+RUN pip3 --no-cache-dir install --upgrade awscli
+
+USER jenkins
+COPY ./JenkinsMetadata/config.xml .
+ONBUILD ENV REF_FOLDER=/usr/share/jenkins/ref
+ONBUILD ARG PROJECT_JENKINS_GIT_URL
+ONBUILD ARG BRANCH
+ONBUILD ARG PROJECT
+ONBUILD RUN mkdir -p $REF_FOLDER/jobs/$PROJECT/
+ONBUILD RUN mv config.xml $REF_FOLDER/jobs/$PROJECT/
+ONBUILD RUN sed -i 's/%GIT_URL%/$PROJECT_JENKINS_GIT_URL/g;s/%BRANCH%/$BRANCH/g;' $REF_FOLDER/jobs/$PROJECT/config.xml
