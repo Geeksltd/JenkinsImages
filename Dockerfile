@@ -23,9 +23,6 @@ add-apt-repository \
 apt-get update && \
 apt-get -y install docker-ce
 
-# Map to the host Docker daemon
-ENV DOCKER_HOST="tcp://10.0.75.1:2375"
-
 # Install kubectl
 # Set the Kubernetes version as found in the UCP Dashboard or API
 ENV k8sversion=v1.8.11
@@ -51,12 +48,12 @@ RUN apt-get update && \
 
 RUN pip3 --no-cache-dir install --upgrade awscli
 
-USER jenkins
 COPY ./JenkinsMetadata/config.xml .
 ONBUILD ENV REF_FOLDER=/usr/share/jenkins/ref
 ONBUILD ARG PROJECT_JENKINS_GIT_URL
 ONBUILD ARG BRANCH
 ONBUILD ARG PROJECT
+ONBUILD USER jenkins
 ONBUILD RUN mkdir -p $REF_FOLDER/jobs/$PROJECT/
 ONBUILD RUN mv config.xml $REF_FOLDER/jobs/$PROJECT/
 ONBUILD RUN sed -i "s#%GIT_URL%#$PROJECT_JENKINS_GIT_URL#g;s#%BRANCH%#$BRANCH#g;" $REF_FOLDER/jobs/$PROJECT/config.xml
