@@ -15,3 +15,7 @@ RUN dotnet tool install -g replace-in-file
 # Jenkins
 RUN choco install -g Jenkins -y && \
 	setx PATH "%PROGRAMFILES(X86)%\Jenkins\;%PATH%;";
+
+# Kubectl
+RUN choco install -g kubernetes-cli -y && \
+	setx PATH "%ProgramData%\chocolatey\lib\kubernetes-cli\tools\kubernetes\client\;%PATH%;";
