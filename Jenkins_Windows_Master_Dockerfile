@@ -9,11 +9,9 @@ RUN powershell -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "ie
 RUN choco install dotnetcore-sdk -y && \
     setx PATH "%ProgramData%\dotnet\;%PATH%;";
 
-# Install replace-in-file
+# replace-in-file
 RUN dotnet tool install -g replace-in-file
 
-ENV JAVA_HOME c:\\Java\\jre1.8.0_91
-# Install Java
-RUN choco install -g javaruntime && \
-	setx PATH %PATH%;%JAVA_HOME%\bin
-
+# Jenkins
+RUN choco install -g Jenkins -y && \
+	setx PATH "%PROGRAMFILES(X86)%\Jenkins\;%PATH%;";
