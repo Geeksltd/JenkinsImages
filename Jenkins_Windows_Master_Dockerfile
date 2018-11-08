@@ -1,4 +1,6 @@
-FROM microsoft/windowsservercore as windows-with-java
+FROM microsoft/windowsservercore
+ENV JENKINS_VERSION 2.0
+ENV HOME /jenkins
 
 # Install Chocolatey
 RUN powershell -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && \
@@ -6,28 +8,12 @@ RUN powershell -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "ie
 
 RUN choco install dotnetcore-sdk -y && \
     setx PATH "%ProgramData%\dotnet\;%PATH%;";
-# Install replace-in-file
-RUN dotnet tool install -g msharp-build 
-RUN msharp-build -tools
 
-RUN powershell -Command \
-    wget 'http://javadl.oracle.com/webapps/download/AutoDL?BundleId=210185' -Outfile 'C:\jreinstaller.exe' ; \
-    Start-Process -filepath C:\jreinstaller.exe -passthru -wait -argumentlist "/s,INSTALLDIR=c:\Java\jre1.8.0_91" ; \
-    del C:\jreinstaller.exe
+# Install replace-in-file
+RUN dotnet tool install -g replace-in-file
 
 ENV JAVA_HOME c:\\Java\\jre1.8.0_91
-RUN setx PATH %PATH%;%JAVA_HOME%\bin
+# Install Java
+RUN choco install -g javaruntime && \
+	setx PATH %PATH%;%JAVA_HOME%\bin
 
-FROM windows-with-java
-ENV HOME /jenkins
-ENV JENKINS_VERSION 2.0
-
-RUN mkdir \jenkins
-RUN powershell -Command "wget -Uri http://mirrors.jenkins.io/war/latest/jenkins.war -UseBasicParsing -OutFile /jenkins/jenkins.war"
-
-EXPOSE 8080
-EXPOSE 50000
-
-COPY JenkinsMetadata\\config.xml $USERPROFILE/.jenkins/
-
-CMD java -jar c:\jenkins\jenkins.war
