@@ -1,21 +1,43 @@
 FROM microsoft/windowsservercore
 ENV JENKINS_VERSION 2.0
 ENV HOME /jenkins
-
+ENV CHOCOLATEY_LIB "%ProgramData%\\chocolatey\\bin"
 # Install Chocolatey
 RUN powershell -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && \
-    setx PATH "%ProgramData%\chocolatey\bin\;%PATH%";
+    setx PATH "%CHOCOLATEY_LIB%\\;%PATH%";
 
 RUN choco install dotnetcore-sdk -y && \
-    setx PATH "%ProgramData%\dotnet\;%PATH%;";
+    setx PATH "%ProgramData%\\dotnet\\;%PATH%;";
 
 # replace-in-file
 RUN dotnet tool install -g replace-in-file
 
 # Jenkins
 RUN choco install -g Jenkins -y && \
-	setx PATH "%PROGRAMFILES(X86)%\Jenkins\;%PATH%;";
+	setx PATH "%PROGRAMFILES(X86)%\\Jenkins\\;%PATH%;";
 
 # Kubectl
 RUN choco install -g kubernetes-cli -y && \
-	setx PATH "%ProgramData%\chocolatey\lib\kubernetes-cli\tools\kubernetes\client\;%PATH%;";
+	setx PATH "%CHOCOLATEY_LIB%\\kubernetes-cli\\tools\\kubernetes\\client\\;%PATH%;";
+
+# Docker
+RUN choco install -g docker -y && \
+	setx PATH "%CHOCOLATEY_LIB%\\docker\\tools\\;%PATH%;";
+
+# AWS cli
+RUN choco install -g awscli -y && \
+	setx PATH "%PROGRAMFILES%\\Amazon\\AWSCLI\\;%PATH%;";
+
+EXPOSE 8080
+EXPOSE 5000
+
+CMD jenkins start
+
+COPY JenkinsMetadata\\config.xml $USERPROFILE/.jenkins/
+ONBUILD ARG PROJECT_JENKINS_GIT_URL
+ONBUILD ARG BRANCH
+ONBUILD ARG PROJECT
+ONBUILD USER jenkins
+ONBUILD RUN mkdir $USERPROFILE/.jenkins/$PROJECT/
+ONBUILD RUN move $USERPROFILE/.jenkins/config.xml $USERPROFILE/.jenkins/$PROJECT/
+ONBUILD RUN replace-in-file $USERPROFILE/.jenkins/$PROJECT/ -set %GIT_URL% $PROJECT_JENKINS_GIT_URL -set %BRANCH% $BRANCH
