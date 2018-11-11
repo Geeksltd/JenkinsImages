@@ -42,13 +42,13 @@ RUN setx PATH "%PATH%;%JAVA_HOME%\bin"
 ENV JENKINS_VERSION 2.0
 ENV JENKINS_HOME c:\\jenkins\\jenkins 
 ENV jenkins.install.state INITIAL_SETUP_COMPLETED
-ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false" 
-ENV JAVA_OPTS="-Dpermissive-script-security.enabled=true"
+ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false -Dpermissive-script-security.enabled=true" 
 
 RUN mkdir %JENKINS_HOME%
 RUN powershell -Command "wget -Uri http://mirrors.jenkins.io/war/latest/jenkins.war -UseBasicParsing -OutFile c:\\jenkins\jenkins.war"
 COPY --from=plugins /usr/share/jenkins/ref/plugins/ $JENKINS_HOME\\plugins
 COPY JenkinsMetadata\\config.xml .jenkins\\config.xml
+COPY JenkinsMetadata\\init.groovy "%JENKINS_HOME%\\init.groovy"
 
 # git
 RUN choco install -g git -y && \
@@ -65,4 +65,4 @@ ONBUILD ENV DOCKER_HOST $DOCKER_HOST_URL
 
 EXPOSE 8080
 EXPOSE 5000
-CMD java -jar c:\\jenkins\\jenkins.war
+CMD java -jar c:\\jenkins\\jenkins.war --argumentsRealm.passwd.admin=test  --argumentsRealm.roles.user=admin --argumentsRealm.roles.admin=admin
