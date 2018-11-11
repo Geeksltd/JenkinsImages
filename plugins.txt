@@ -64,7 +64,6 @@ plain-credentials
 powershell
 resource-disposer
 scm-api
-script-security
 ssh-credentials
 ssh-slaves
 structs
@@ -83,3 +82,4 @@ workflow-multibranch
 workflow-scm-step
 workflow-step-api
 workflow-support
+google-login

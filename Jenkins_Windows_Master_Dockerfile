@@ -1,3 +1,9 @@
+FROM jenkins/jenkins:lts as plugins
+
+#automatically installing all plugins
+COPY plugins.txt plugins.txt
+RUN /usr/local/bin/install-plugins.sh < plugins.txt
+
 FROM microsoft/windowsservercore
 
 # Install Chocolatey
@@ -24,7 +30,6 @@ RUN choco install -g docker -y && \
 RUN choco install -g awscli -y && \
 	setx PATH "%PROGRAMFILES%\\Amazon\\AWSCLI\\;%PATH%;";
 
-
 # JAVA
 ENV JAVA_HOME c:\\Java\\jre1.8.0_91
 RUN powershell -Command \
@@ -35,13 +40,20 @@ RUN setx PATH "%PATH%;%JAVA_HOME%\bin"
 
 # Jenkins
 ENV JENKINS_VERSION 2.0
-ENV JENKINS_HOME c:\\jenkins\\jenkins
+ENV JENKINS_HOME c:\\jenkins\\jenkins 
+ENV jenkins.install.state INITIAL_SETUP_COMPLETED
+ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false" 
+ENV JAVA_OPTS="-Dpermissive-script-security.enabled=true"
+
 RUN mkdir %JENKINS_HOME%
 RUN powershell -Command "wget -Uri http://mirrors.jenkins.io/war/latest/jenkins.war -UseBasicParsing -OutFile c:\\jenkins\jenkins.war"
-
+COPY --from=plugins /usr/share/jenkins/ref/plugins/ $JENKINS_HOME\\plugins
 COPY JenkinsMetadata\\config.xml .jenkins\\config.xml
 
-ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
+# git
+RUN choco install -g git -y && \
+	setx PATH "%PROGRAMFILES%\\git\\bin\\;%PATH%;";
+
 ONBUILD ARG PROJECT_JENKINS_GIT_URL
 ONBUILD ARG BRANCH
 ONBUILD ARG PROJECT
@@ -49,6 +61,7 @@ ONBUILD ARG DOCKER_HOST_URL
 ONBUILD RUN mkdir "%JENKINS_HOME%\\jobs\\%PROJECT%"
 ONBUILD RUN replace-in-file "c:\\.jenkins\\config.xml" -set "%GIT_URL%" %PROJECT_JENKINS_GIT_URL% -set "%BRANCH_NAME%" %BRANCH%
 ONBUILD RUN copy .jenkins\config.xml "%JENKINS_HOME%\jobs\%PROJECT%\"
+ONBUILD ENV DOCKER_HOST $DOCKER_HOST_URL
 
 EXPOSE 8080
 EXPOSE 5000
