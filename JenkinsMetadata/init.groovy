@@ -15,8 +15,7 @@ def instance = Jenkins.getInstance();
 
 String clientId = System.getenv("GOOGLE_LOGIN_CLIENT_ID")
 String clientSecret = System.getenv("GOOGLE_LOGIN_CLIENT_SECRET")
-String domains = System.getenv("GOOGLE_LOGIN_DOMAIN")
-SecurityRealm ldap_realm = new GoogleOAuth2SecurityRealm(clientId, clientSecret, domains);
+SecurityRealm ldap_realm = new GoogleOAuth2SecurityRealm(clientId, clientSecret, "");
 
 instance.setAuthorizationStrategy(new hudson.security.FullControlOnceLoggedInAuthorizationStrategy())
 instance.setSecurityRealm(ldap_realm)
