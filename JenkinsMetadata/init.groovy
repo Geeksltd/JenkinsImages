@@ -9,6 +9,9 @@ import hudson.model.*;
 import jenkins.model.*;
 import hudson.security.*;
 import org.jenkinsci.plugins.googlelogin.GoogleOAuth2SecurityRealm;
+import org.jenkinsci.plugins.permissivescriptsecurity.PermissiveWhitelist
+import org.jenkinsci.plugins.permissivescriptsecurity.PermissiveWhitelist.Mode
+
 
 
 def instance = Jenkins.getInstance()
@@ -25,3 +28,6 @@ strategy.add(Jenkins.ADMINISTER, 'authenticated')
 instance.setAuthorizationStrategy(strategy)
 
 instance.save()
+
+// Disable security for running scripts.
+PermissiveWhitelist.MODE = Mode.NO_SECURITY
