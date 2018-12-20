@@ -18,6 +18,9 @@ RUN choco install dotnetcore-sdk -y && \
 # replace-in-file
 RUN dotnet tool install -g replace-in-file
 
+# accelerate-package-restore
+RUN dotnet tool install -g accelerate-package-restore
+
 # Kubectl
 RUN choco install -g kubernetes-cli -y && \
 	setx PATH "%CHOCOLATEY_LIB%\\kubernetes-cli\\tools\\kubernetes\\client\\;%PATH%;";
