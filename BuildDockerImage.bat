@@ -1,0 +1,1 @@
+docker build -t basejenkins -f Jenkins_Windows_Master_Dockerfile .
