@@ -59,7 +59,7 @@ RUN choco install -g git -y && \
 
 # The following environmnet variables should be provided at runtime.
 #DOCKER_HOST
-#PROJECT_JENKINS_GIT_URL
+#PROJECT_JENKINS_FILE_GIT_URL
 #BRANCH 
 #PROJECT
 #GOOGLE_LOGIN_CLIENT_ID

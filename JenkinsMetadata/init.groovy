@@ -25,13 +25,13 @@ SecurityRealm ldap_realm = new GoogleOAuth2SecurityRealm(clientId, clientSecret,
 instance.setSecurityRealm(ldap_realm)
 
 def strategy = new hudson.security.GlobalMatrixAuthorizationStrategy()
-strategy.add(Jenkins.ADMINISTER, 'authenticated')
+strategy.add(Jenkins.ADMINISTER, 'Matt')
 instance.setAuthorizationStrategy(strategy)
 
 instance.save()
 
 // Add the project job
-def scm = new GitSCM(System.getenv("PROJECT_JENKINS_GIT_URL"))
+def scm = new GitSCM(System.getenv("PROJECT_JENKINS_FILE_GIT_URL"))
 scm.branches = [new BranchSpec("*/"+System.getenv("BRANCH"))];
 def flowDefinition = new org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition(scm, "Jenkinsfile")
 def parent = Jenkins.instance
