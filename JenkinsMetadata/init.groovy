@@ -12,22 +12,22 @@ import org.jenkinsci.plugins.googlelogin.GoogleOAuth2SecurityRealm;
 import org.jenkinsci.plugins.permissivescriptsecurity.PermissiveWhitelist;
 import org.jenkinsci.plugins.permissivescriptsecurity.PermissiveWhitelist.Mode;
 import hudson.plugins.git.*;
+import jenkins.install.InstallState;
 
 
 
 def instance = Jenkins.getInstance()
 
-// Set google as the authentication provider
-String clientId = System.getenv("GOOGLE_LOGIN_CLIENT_ID")
-String clientSecret = System.getenv("GOOGLE_LOGIN_CLIENT_SECRET")
-String domain = System.getenv("GOOGLE_LOGIN_DOMAIN")
-SecurityRealm ldap_realm = new GoogleOAuth2SecurityRealm(clientId, clientSecret, domain)
-instance.setSecurityRealm(ldap_realm)
+instance.setInstallState(InstallState.INITIAL_SETUP_COMPLETED)
 
+// Add the admin user
+def user = instance.getSecurityRealm().createAccount('admin', System.getenv("JENKINS_ADMIN_PASSWORD"));
+user.save();
 def strategy = new hudson.security.GlobalMatrixAuthorizationStrategy()
-strategy.add(Jenkins.ADMINISTER, 'Matt')
+strategy.add(Jenkins.ADMINISTER, "admin")
 instance.setAuthorizationStrategy(strategy)
 
+// Disable the initial setup.
 instance.save()
 
 // Add the project job
@@ -42,4 +42,6 @@ parent.reload()
 
 // Disable security for running scripts.
 PermissiveWhitelist.MODE = Mode.NO_SECURITY
+
+
 
