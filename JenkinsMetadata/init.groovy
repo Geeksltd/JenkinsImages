@@ -15,19 +15,20 @@ import hudson.plugins.git.*;
 import jenkins.install.InstallState;
 
 
-
+print "Started initialization from init.groovy"
 def instance = Jenkins.getInstance()
 
 instance.setInstallState(InstallState.INITIAL_SETUP_COMPLETED)
 
 // Add the admin user
-def user = instance.getSecurityRealm().createAccount('admin', System.getenv("JENKINS_ADMIN_PASSWORD"));
-user.save();
+def hudsonRealm = new HudsonPrivateSecurityRealm(false)
+hudsonRealm.createAccount('admin', System.getenv("JENKINS_ADMIN_PASSWORD"));
+instance.setSecurityRealm(hudsonRealm)
+
 def strategy = new hudson.security.GlobalMatrixAuthorizationStrategy()
 strategy.add(Jenkins.ADMINISTER, "admin")
 instance.setAuthorizationStrategy(strategy)
 
-// Disable the initial setup.
 instance.save()
 
 // Add the project job
@@ -42,6 +43,6 @@ parent.reload()
 
 // Disable security for running scripts.
 PermissiveWhitelist.MODE = Mode.NO_SECURITY
-
+print "Finished initialization from init.groovy"
 
 
