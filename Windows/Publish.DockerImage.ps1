@@ -1,0 +1,1 @@
+..\Scripts\Publish.DockerImage.ps1 .

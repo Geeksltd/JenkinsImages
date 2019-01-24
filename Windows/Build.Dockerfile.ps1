@@ -1,0 +1,1 @@
+..\Scripts\Build.Dockerfile.ps1 .
