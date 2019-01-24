@@ -33,7 +33,7 @@ instance.save()
 
 // Add the project job
 def scm = new GitSCM(System.getenv("PROJECT_JENKINS_FILE_GIT_URL"))
-scm.branches = [new BranchSpec("*/"+System.getenv("BRANCH"))];
+scm.branches = [new BranchSpec("*/master")];
 def flowDefinition = new org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition(scm, "Jenkinsfile")
 def parent = Jenkins.instance
 def job = new org.jenkinsci.plugins.workflow.job.WorkflowJob(parent, System.getenv("PROJECT"))
