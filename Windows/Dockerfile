@@ -4,7 +4,7 @@ FROM jenkins/jenkins:lts as plugins
 ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
 
 #automatically installing all plugins
-COPY ..\\plugins.txt plugins.txt
+COPY plugins.txt plugins.txt
 RUN /usr/local/bin/install-plugins.sh < plugins.txt
 
 FROM microsoft/windowsservercore
@@ -53,8 +53,8 @@ ENV JAVA_OPTS="-Dpermissive-script-security.enabled=true"
 RUN mkdir %JENKINS_HOME%
 RUN powershell -Command "wget -Uri http://mirrors.jenkins.io/war/latest/jenkins.war -UseBasicParsing -OutFile c:\\jenkins\jenkins.war"
 COPY --from=plugins /usr/share/jenkins/ref/plugins/ $JENKINS_HOME\\plugins
-COPY ..\\JenkinsMetadata\\config.xml .jenkins\\config.xml
-COPY ..\\JenkinsMetadata\\init.groovy $JENKINS_HOME\\init.groovy
+COPY JenkinsMetadata\\config.xml .jenkins\\config.xml
+COPY JenkinsMetadata\\init.groovy $JENKINS_HOME\\init.groovy
 
 # git
 RUN choco install -g git -y && \
