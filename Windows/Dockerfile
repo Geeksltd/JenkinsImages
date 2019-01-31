@@ -60,6 +60,10 @@ COPY JenkinsMetadata\\init.groovy $JENKINS_HOME\\init.groovy
 RUN choco install -g git -y && \
 	setx PATH "%PROGRAMFILES%\\git\\bin\\;%PATH%;";
 
+# Install AWSPowerShell
+RUN powershell -Command "Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force"
+RUN powershell -Command "Install-Module -Name AWSPowerShell -Force"
+
 # The following environmnet variables should be provided at runtime.
 #DOCKER_HOST
 #PROJECT_JENKINS_FILE_GIT_URL
