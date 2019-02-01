@@ -64,6 +64,9 @@ RUN choco install -g git -y && \
 RUN powershell -Command "Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force"
 RUN powershell -Command "Install-Module -Name AWSPowerShell -Force"
 
+# Install AWS.ECS.Tools
+RUN dotnet tool install -g Amazon.ECS.Tools --version 3.0.0
+
 # The following environmnet variables should be provided at runtime.
 #DOCKER_HOST
 #PROJECT_JENKINS_FILE_GIT_URL
@@ -73,6 +76,7 @@ RUN powershell -Command "Install-Module -Name AWSPowerShell -Force"
 #PROJECT_REPOSITORY_URL
 #PROJECT_REPOSITORY_USERNAME
 #PROJECT_REPOSITORY_PASSWORD
+#PROJECT_TASK_FAMILY_NAME
 
 EXPOSE 8080
 EXPOSE 5000
