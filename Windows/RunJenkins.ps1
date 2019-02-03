@@ -1,4 +1,4 @@
-$Credentials=(aws sts assume-role --role-arn [#BuildServerAgent_ROLE_ARN#] --role-session-name [#PROJECT_NAME#] | ConvertFrom-Json | select -expand Credentials)
+$Credentials=(aws sts assume-role --role-arn [#BuildServerAgent_ROLE_ARN#] --duration-seconds 43200 --role-session-name [#PROJECT_NAME#] | ConvertFrom-Json | select -expand Credentials)
 $AccessKeyId=$Credentials.AccessKeyId
 $SecretAccessKey=$Credentials.SecretAccessKey
 $SessionToken=$Credentials.SessionToken
