@@ -16,4 +16,5 @@ docker run -it --rm -p 8080:8080 `
 --env AWS_ACCESS_KEY_ID=$AccessKeyId `
 --env AWS_SECRET_ACCESS_KEY=$SecretAccessKey `
 --env AWS_SESSION_TOKEN=$SessionToken `
+--env REGION=$(((Invoke-WebRequest -uri http://169.254.169.254/latest/dynamic/instance-identity/document).Content | ConvertFrom-Json).region)
 geeksltd/jenkins-windows:1.03
