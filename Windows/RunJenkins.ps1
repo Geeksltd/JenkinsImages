@@ -7,6 +7,7 @@ docker run -it --rm -p 8080:8080 `
 --env PROJECT_JENKINS_FILE_GIT_URL=https://github.com/Geeksltd/MasterJenkinsfile.git `
 --env BRANCH=[#BRANCH#] `
 --env PROJECT=[#PROJECT#] `
+--env ECS_CLUSTER_NAME=[#ECS_CLUSTER_NAME#] `
 --env PROJECT_TASK_FAMILY_NAME=[#PROJECT_TASK_FAMILY_NAME#] `
 --env PROJECT_ECS_SERVICE_NAME=[#PROJECT_ECS_SERVICE_NAME#] `
 --env JENKINS_ADMIN_PASSWORD=$((New-Guid).ToString()) `
