@@ -32,9 +32,9 @@ instance.setAuthorizationStrategy(strategy)
 instance.save()
 
 // Add the project job
-def scm = new GitSCM(System.getenv("PROJECT_JENKINS_FILE_GIT_URL"))
+def scm = new GitSCM(System.getenv("PROJECT_JENKINSFILE_GIT_URL"))
 scm.branches = [new BranchSpec("*/master")];
-def flowDefinition = new org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition(scm, "Jenkinsfile")
+def flowDefinition = new org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition(scm, System.getenv("PROJECT_JENKINSFILE_NAME"))
 def parent = Jenkins.instance
 def job = new org.jenkinsci.plugins.workflow.job.WorkflowJob(parent, System.getenv("PROJECT"))
 job.definition = flowDefinition

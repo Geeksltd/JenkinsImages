@@ -69,7 +69,8 @@ RUN dotnet tool install -g Amazon.ECS.Tools --version 3.0.0
 
 # The following environmnet variables should be provided at runtime.
 #DOCKER_HOST
-#PROJECT_JENKINS_FILE_GIT_URL
+#PROJECT_JENKINSFILE_GIT_URL
+#PROJECT_JENKINSFILE_NAME
 #BRANCH 
 #PROJECT
 #JENKINS_ADMIN_PASSWORD

@@ -1,7 +1,8 @@
 docker run -it --rm -p 8080:8080 `
 --name [#PROJECT#]-[#BRANCH#] `
 --env DOCKER_HOST=$("tcp://"+(Test-Connection -ComputerName $env:computername -count 1).IPV4Address.ipaddressTOstring + ":2375") `
---env PROJECT_JENKINS_FILE_GIT_URL=https://github.com/Geeksltd/MasterJenkinsfile.git `
+--env PROJECT_JENKINSFILE_GIT_URL=https://github.com/Geeksltd/MasterJenkinsfile.git `
+--env PROJECT_JENKINSFILE_NAME=[#PROJECT_JENKINSFILE_NAME#] `
 --env BRANCH=[#BRANCH#] `
 --env PROJECT=[#PROJECT#] `
 --env TASK_ROLE_NAME=[#TASK_ROLE_NAME#] `
