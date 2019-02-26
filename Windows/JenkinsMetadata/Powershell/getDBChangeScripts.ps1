@@ -1,0 +1,1 @@
+﻿.\getDBChangeScripts.ps1
