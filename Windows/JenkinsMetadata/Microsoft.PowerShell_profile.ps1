@@ -1,6 +1,6 @@
 ﻿function getLastSuccessfulDeploymentCommitDate(){
 
-$lastDeploymentTagDate=[DateTime]::Parse($(git tag --contains="Test-Pangolin" --sort=-taggerdate --format="%(taggerdate:iso)" | Select-Object -first 1))
+$lastDeploymentTagDate=[DateTime]::Parse($(git tag --contains=$DEPLOY_TAG_PREFIX --sort=-taggerdate --format="%(taggerdate:iso)" | Select-Object -first 1))
 
 if($LASTEXITCODE -eq 129){
 	$lastDeploymentTagDate = [DateTime]::MinValue;
