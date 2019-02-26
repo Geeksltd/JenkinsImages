@@ -1,27 +1,42 @@
 ﻿function getLastSuccessfulDeploymentCommitDate(){
-[alias("GetLastDeploymentCommit")]
 
-$lastDeploymentTagDate=git tag --contains="Test-Pangolin" --sort=-taggerdate --format="%(taggerdate:iso)" | Select-Object -first 1;
-if($LASTEXITCODE ==129)
-	$lastDeploymentTagDate = [datetime].MinValue;
+$lastDeploymentTagDate=[DateTime]::Parse($(git tag --contains="Test-Pangolin" --sort=-taggerdate --format="%(taggerdate:iso)" | Select-Object -first 1))
 
-return [datetime]::Parse($lastDeploymentTagDate);
+if($LASTEXITCODE -eq 129){
+	$lastDeploymentTagDate = [DateTime]::MinValue;
 }
 
-function getDBChangeScriptsSince($lastDeploymentDate)
-{
-	foreach($file in Get-ChildItem DB)
+return $lastDeploymentTagDate;
+}
+
+function getDBChangeScriptsSince(){
+param([Parameter(mandatory=$true, ValueFromPipeline=$true)]$lastDeploymentDate)
+
+	$result = New-Object Collections.Generic.List[string]
+	foreach($file in Get-ChildItem DB-Changes)
 	{
-		$fileDate = getDateFromFileName($file);
-		if($fileDate != null && ($fileDate -lt @lastDeploymentDate))
-		$file
+		$fileDate = getDateFromFileName($file);	
+		
+		if($fileDate -ne $null -and $fileDate -gt $lastDeploymentDate)
+		{
+			$result.Add($file)
+		}
 	}
+
+	return $result;
 }
 
+
+function getDBChangeScripts(){
+	return $(getLastSuccessfulDeploymentCommitDate | getDBChangeScriptsSince)
+}
 
 function getDateFromFileName($fileName)
 {
 	try{
+		return [datetime]::parseexact($fileName,"yyyy-MM-dd@HH-mm-ss.SQL",$null);
 	}
-	
+	catch [Exception]{
+		return $null;
+	}
 }
