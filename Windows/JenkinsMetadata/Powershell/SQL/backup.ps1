@@ -14,6 +14,6 @@ function backupDatabase()
                 @overwrite_S3_backup_file=1,
                 @type='FULL';"
 
+    runSqlCommand($command,$databaseServer,$databaseName,$databaseUsername,$databasePassword)
 
-    Invoke-Sqlcmd -ServerInstance $databaseServer -Database $databaseName -Username $databaseUsername -Password $databasePassword -Query $command  -AbortOnError
 }
