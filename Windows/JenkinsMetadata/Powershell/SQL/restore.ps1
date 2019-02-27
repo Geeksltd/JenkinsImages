@@ -5,7 +5,7 @@ function doRestoreDatabase()
         [Parameter(mandatory=$true)][string]$s3_object_arn_to_restore_from,
         [Parameter(mandatory=$true)][string]$databaseServer,        
         [Parameter(mandatory=$true)][string]$databaseUsername,
-        [Parameter(mandatory=$true)][string]$databasePassword,        
+        [Parameter(mandatory=$true)][string]$databasePassword
         )
 
     $command = "exec msdb.dbo.rds_restore_database 
@@ -13,5 +13,5 @@ function doRestoreDatabase()
                 @s3_arn_to_restore_from='$s3_object_arn_to_restore_from';"
 
     
-    runSqlCommand($command,$databaseServer,"master",$databaseUsername,$databasePassword)
+    runSqlCommand $command $databaseServer "master" $databaseUsername $databasePassword
 }

@@ -1,5 +1,6 @@
-﻿.\getDBChangeScripts.ps1
-.\SQL\runSqlCommand.ps1
-.\SQL\backup.ps1
-.\SQL\restore.ps1
-.\SQL\execute.ps1
+﻿$ErrorActionPreference = "Stop"
+
+getDBChangeScripts.ps1
+
+$sqlDir="SQL"  
+Get-ChildItem "$pshome\${sqlDir}\*.ps1" | foreach{.$_} 

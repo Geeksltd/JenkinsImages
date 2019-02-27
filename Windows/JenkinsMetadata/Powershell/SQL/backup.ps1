@@ -5,7 +5,7 @@ function backupDatabase()
         [Parameter(mandatory=$true)][string]$s3_object_arn_to_backup_to,
         [Parameter(mandatory=$true)][string]$databaseServer,
         [Parameter(mandatory=$true)][string]$databaseUsername,
-        [Parameter(mandatory=$true)][string]$databasePassword,
+        [Parameter(mandatory=$true)][string]$databasePassword
         )
 
     $command = "exec msdb.dbo.rds_backup_database 
@@ -14,6 +14,6 @@ function backupDatabase()
                 @overwrite_S3_backup_file=1,
                 @type='FULL';"
 
-    runSqlCommand($command,$databaseServer,$databaseName,$databaseUsername,$databasePassword)
+    runSqlCommand $command $databaseServer $databaseName $databaseUsername $databasePassword
 
 }
