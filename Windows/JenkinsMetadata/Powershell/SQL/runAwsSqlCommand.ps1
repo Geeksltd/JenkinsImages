@@ -1,4 +1,4 @@
-function runSqlCommand()
+function runAwsSqlCommand()
 {
 param(
     [Parameter(mandatory=$true)][string]$command,
@@ -14,22 +14,18 @@ param(
 
  Write-Host "Running ..."
  $awsResponse = Invoke-Sqlcmd -ServerInstance $databaseServer -Database $databaseName -Username $databaseUsername -Password $databasePassword -Query $command -DisableCommands -AbortOnError
- $task_id=$awsResponse.task_id
- 
+ $task_id=$awsResponse.task_id 
  Write-Host "Finished running ..."
-
-Write-Host "Checking status for task id $task_id : ..."
+ 
+ Write-Host "Checking status for task id $task_id for $databaseName ..."
 do {
     
-    $getStatusCommand="exec msdb.dbo.rds_task_status @task_id=$task_id"
+    $getStatusCommand="exec msdb.dbo.rds_task_status @db_name=$databaseName, @task_id=$task_id"
     $awsStatusResponse = Invoke-Sqlcmd -ServerInstance $databaseServer -Database $databaseName -Username $databaseUsername -Password $databasePassword -Query $getStatusCommand  -DisableCommands -AbortOnError
     Write-Host $awsStatusResponse.lifecycle $awsStatusResponse."% complete" %
     
-    if($awsStatusResponse.lifecycle -eq "SUCCESS") {
-    
-        Write-Host $awsStatusResponse
+    if($awsStatusResponse.lifecycle -eq "SUCCESS") {    
         Write-Host "Completed in " $awsStatusResponse."duration(mins)" "min(s)"
-
         break
     }
     

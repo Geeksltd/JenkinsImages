@@ -14,6 +14,5 @@ function backupDatabase()
                 @overwrite_S3_backup_file=1,
                 @type='FULL';"
 
-    runSqlCommand $command $databaseServer $databaseName $databaseUsername $databasePassword
-
+    runAwsSqlCommand $command $databaseServer $databaseName $databaseUsername $databasePassword
 }

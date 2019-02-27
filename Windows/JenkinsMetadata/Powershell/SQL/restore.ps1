@@ -1,4 +1,4 @@
-function doRestoreDatabase()
+function restoreDatabase()
 {
     param(
         [Parameter(mandatory=$true)][string]$databaseName,
@@ -13,5 +13,5 @@ function doRestoreDatabase()
                 @s3_arn_to_restore_from='$s3_object_arn_to_restore_from';"
 
     
-    runSqlCommand $command $databaseServer "master" $databaseUsername $databasePassword
+    runSqlCommand $command $databaseServer 'master' $databaseUsername $databasePassword
 }
