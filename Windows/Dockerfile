@@ -67,6 +67,9 @@ RUN powershell -Command "Install-Module -Name AWSPowerShell -Force"
 # Install AWS.ECS.Tools
 RUN dotnet tool install -g Amazon.ECS.Tools --version 3.0.0
 
+ENV POWERSHELL_HOME C:\\Windows\\System32\\WindowsPowerShell\\v1.0
+COPY Powershell $POWERSHELL_HOME
+
 # The following environmnet variables should be provided at runtime.
 #DOCKER_HOST
 #PROJECT_JENKINSFILE_GIT_URL

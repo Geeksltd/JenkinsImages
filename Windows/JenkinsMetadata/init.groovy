@@ -19,7 +19,7 @@ print "Started initialization from init.groovy"
 def instance = Jenkins.getInstance()
 
 instance.setInstallState(InstallState.INITIAL_SETUP_COMPLETED)
-
+f
 // Add the admin user
 def hudsonRealm = new HudsonPrivateSecurityRealm(false)
 hudsonRealm.createAccount('admin', System.getenv("JENKINS_ADMIN_PASSWORD"));

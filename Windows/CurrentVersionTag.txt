@@ -1,1 +1,1 @@
-geeksltd/jenkins-windows:1.04
+geeksltd/jenkins-windows:1.05
