@@ -6,15 +6,27 @@ function renameDatabase()
     )	
 
 
-    $killConnectionsCommand = "DECLARE @kill varchar(8000) = '';  
-                               SELECT @kill = @kill + 'kill ' + CONVERT(varchar(5), session_id) + ';'  
-                               FROM sys.dm_exec_sessions
-                               WHERE database_id  = db_id('$currentDatabaseName')
+    $command = "    
+    DECLARE @kill varchar(8000) = '';  
+    DECLARE @currentDbName nvarchar(128) = N'$currentDatabaseName'
+    DECLARE @newDBName nvarchar(128) = N'$newDatabaseName'
 
-                               EXEC(@kill);"
-    runSqlCommand -command $killConnectionsCommand -databaseName 'master'
+IF (EXISTS (SELECT name 
+FROM master.dbo.sysdatabases 
+WHERE ('[' + name + ']' = @currentDbName 
+OR name = @currentDbName)))
+BEGIN
 
-    
-    $renameCommand = "EXEC rdsadmin.dbo.rds_modify_db_name N'$currentDatabaseName', N'$newDatabaseName'";   
-    runSqlCommand -command $renameCommand -databaseName 'master'    
+    SELECT @kill = @kill + 'kill ' + CONVERT(varchar(5), session_id) + ';'  
+    FROM sys.dm_exec_sessions
+    WHERE database_id  = db_id(@currentDbName)
+
+    EXEC(@kill);
+    GO
+
+    EXEC rdsadmin.dbo.rds_modify_db_name @currentDbName, @newDBName
+    GO
+
+END"    
+    runSqlCommand $command -databaseName 'master'    
 }
