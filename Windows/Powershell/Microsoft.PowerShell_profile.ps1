@@ -1,4 +1,4 @@
 ﻿$ErrorActionPreference = "Stop"
 
-$sqlDir="SQL"  
-Get-ChildItem "$pshome\${sqlDir}\*.ps1" | foreach{.$_} 
+$sqlDir="Scripts"  
+Get-ChildItem "$pshome\${sqlDir}\*.ps1" -Recurse | foreach{.$_} 
