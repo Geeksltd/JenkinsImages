@@ -22,10 +22,8 @@ BEGIN
     WHERE database_id  = db_id(@currentDbName)
 
     EXEC(@kill);
-    GO
 
-    EXEC rdsadmin.dbo.rds_modify_db_name @currentDbName, @newDBName
-    GO
+    EXEC rdsadmin.dbo.rds_modify_db_name @currentDbName, @newDBName    
 
 END"    
     runSqlCommand $command -databaseName 'master'    
