@@ -67,8 +67,12 @@ RUN powershell -Command "Install-Module -Name AWSPowerShell -Force"
 # Install AWS.ECS.Tools
 RUN dotnet tool install -g Amazon.ECS.Tools --version 3.0.0
 
+# Copy powershell scripts
 ENV POWERSHELL_HOME C:\\Windows\\System32\\WindowsPowerShell\\v1.0
 COPY Powershell $POWERSHELL_HOME
+
+#Install SqlServer cmd
+RUN powershell -Command "Install-Module -Name SqlServer -Force"
 
 # The following environmnet variables should be provided at runtime.
 #DOCKER_HOST

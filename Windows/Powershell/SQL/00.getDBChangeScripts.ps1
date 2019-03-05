@@ -1,12 +1,12 @@
 ﻿function getLastSuccessfulDeploymentCommitDate(){
-
-$lastDeploymentTagDate=[DateTime]::Parse($(git describe --match "$DEPLOYMENT_TAG_PREFIX*" | git log -1 --format=%ai))
-
-if($LASTEXITCODE -ne 0){
-    $lastDeploymentTagDate = [DateTime]::MinValue;
+$lastDeploymentTag=$(git tag --sort=committerdate -l -n "$DEPLOYMENT_TAG_PREFIX*" | Select-Object -First 1) 
+if(!$lastDeploymentTag)
+{
+    return [DateTime]::MinValue;
 }
 
-return $lastDeploymentTagDate;
+$lastDeploymentCommit = $(git rev-list -1 $lastDeploymentTag.Trim())
+return [DateTime]::Parse($(git show -s --format="%ci" $lastDeploymentCommit))
 }
 
 function getDBChangeScriptsSince(){
@@ -19,7 +19,7 @@ param([Parameter(mandatory=$true, ValueFromPipeline=$true)]$lastDeploymentDate)
         
         if($fileDate -ne $null -and $fileDate -gt $lastDeploymentDate)
         {
-            $result.Add($file)
+            $result.Add($file.FullName)
         }
     }
 
