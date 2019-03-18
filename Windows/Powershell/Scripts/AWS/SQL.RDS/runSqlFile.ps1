@@ -2,10 +2,10 @@ function runSqlFile()
 {
 param(
     [Parameter(mandatory=$true)][string]$file,
-    [string]$databaseServer=$DATABASE_SERVER,
+    [string]$databaseServer=$env:DATABASE_SERVER,
     [Parameter(mandatory=$true)][string]$databaseName,
-    [string]$databaseUsername = $DATABASE_MASTER_USERNAME,
-    [string]$databasePassword = $DATABASE_MASTER_PASSWORD
+    [string]$databaseUsername = $env:DATABASE_MASTER_USERNAME,
+    [string]$databasePassword = $env:DATABASE_MASTER_PASSWORD
     )
 
  Write-Host "Running ..."

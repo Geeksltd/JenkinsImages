@@ -24,6 +24,10 @@ do {
     $awsStatusResponse = Invoke-Sqlcmd -ServerInstance $databaseServer -Database $databaseName -Username $databaseUsername -Password $databasePassword -Query $getStatusCommand  -DisableCommands -AbortOnError
     Write-Host $awsStatusResponse.lifecycle $awsStatusResponse."% complete" %
     
+    if($awsStatusResponse.lifecycle -eq "ERROR") {    
+        throw $awsStatusResponse."task_info";
+    }
+
     if($awsStatusResponse.lifecycle -eq "SUCCESS") {    
         Write-Host "Completed in " $awsStatusResponse."duration(mins)" "min(s)"
         break
