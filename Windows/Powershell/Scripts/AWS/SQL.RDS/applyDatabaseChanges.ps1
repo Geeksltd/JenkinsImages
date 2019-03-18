@@ -17,8 +17,7 @@ function applyDatabaseChanges()
     $dateTag=$([DateTime]::Now.ToString("dd.MM.yyyy@hh.mm.ss"))      
     $backupFileOnS3 = $backup_s3_bucket + "/" +  $dateTag + ".bak";
 
-    Write-Host $backupFileOnS3
-
+    
     Write-Host "Renaming the current database:" $databaseName    
     renameDatabase $databaseName $referenceDatabaseName
 
