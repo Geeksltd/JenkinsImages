@@ -8,7 +8,7 @@ function runChangeScripts()
 
     foreach($file in $changeScripts)
     {
-        Write-Host "Running " + $file
+        Write-Host "Running "  $file
         runSqlFile $file -databaseName $databaseName
         Write-Host "Finished running " + $file
     }

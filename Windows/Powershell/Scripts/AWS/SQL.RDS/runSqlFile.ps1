@@ -8,8 +8,7 @@ param(
     [string]$databasePassword = $env:DATABASE_MASTER_PASSWORD
     )
 
- Write-Host "Running ..."
- Write-Host $command
+ Write-Host "Running ..." 
  Invoke-Sqlcmd -ServerInstance $databaseServer -Database $databaseName -Username $databaseUsername -Password $databasePassword -InputFile $file -DisableCommands -AbortOnError
  Write-Host "Finished running ..."
 }

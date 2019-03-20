@@ -26,5 +26,7 @@ BEGIN
     EXEC rdsadmin.dbo.rds_modify_db_name @currentDbName, @newDBName    
 
 END"    
-    runSqlCommand $command -databaseName 'master'    
+    runSqlCommand $command -databaseName 'master'   
+
+    awaitDatabaseOnline  -databaseName $newDatabaseName
 }

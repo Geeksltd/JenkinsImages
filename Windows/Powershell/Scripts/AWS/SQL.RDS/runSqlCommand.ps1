@@ -9,6 +9,8 @@ param(
     )
  
  Write-Host "Running ..."  
- Invoke-Sqlcmd -ServerInstance $databaseServer -Database $databaseName -Username $databaseUsername -Password $databasePassword -Query $command -DisableCommands -AbortOnError
+ $result = Invoke-Sqlcmd -ServerInstance $databaseServer -Database $databaseName -Username $databaseUsername -Password $databasePassword -Query $command -DisableCommands -AbortOnError
  Write-Host "Finished running ..."
+
+ return $result;
 }
