@@ -3,7 +3,7 @@ function applyDatabaseChanges()
     param(
         [Parameter(mandatory=$true)][string]$databaseName,
         [Parameter(mandatory=$true)][string]$referenceDatabaseName,
-        [Parameter(mandatory=$true)][string]$backup_s3_bucket 
+        [Parameter(mandatory=$true)][string]$backup_s3_bucket_arn 
         )
 
 	$changeScripts = getDBChangeScripts;
@@ -15,7 +15,7 @@ function applyDatabaseChanges()
     }
 
     $dateTag=$([DateTime]::Now.ToString("dd.MM.yyyy@hh.mm.ss"))      
-    $backupFileOnS3 = $backup_s3_bucket + "/" +  $dateTag + ".bak";
+    $backupFileOnS3 = $backup_s3_bucket_arn + "/" +  $dateTag + ".bak";
 
     
     Write-Host "Renaming the current database:" $databaseName    
