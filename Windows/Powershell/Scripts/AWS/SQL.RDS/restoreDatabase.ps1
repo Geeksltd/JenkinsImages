@@ -13,5 +13,4 @@ function restoreDatabase()
     runAwsSqlCommand $command -databaseName 'master'
 
     awaitDatabaseOnline  -databaseName $databaseName
-
 }

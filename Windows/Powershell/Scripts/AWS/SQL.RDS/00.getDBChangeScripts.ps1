@@ -1,25 +1,29 @@
 ﻿function getLastSuccessfulDeploymentCommitDate(){
-$lastDeploymentTag=$(git tag --sort=committerdate -l -n "$DEPLOYMENT_TAG_PREFIX*" | Select-Object -First 1) 
-if(!$lastDeploymentTag)
+    param($lastSuccessfulDeploymentCommit)
+if(!$lastSuccessfulDeploymentCommit)
 {
     return [DateTime]::MinValue;
 }
 
-$lastDeploymentCommit = $(git rev-list -1 $lastDeploymentTag.Trim())
-return [DateTime]::Parse($(git show -s --format="%ci" $lastDeploymentCommit))
+return [DateTime]::Parse($(git show -s --format="%ci" $lastSuccessfulDeploymentCommit))
 }
 
 function getDBChangeScriptsSince(){
 param([Parameter(mandatory=$true, ValueFromPipeline=$true)]$lastDeploymentDate)
-
+    
+    $dbChangesDir="DB-Changes"
     $result = New-Object Collections.Generic.List[string]
-    foreach($file in Get-ChildItem DB-Changes)
+
+    if(Test-Path -Path $dbChangesDir)
     {
-        $fileDate = getDateFromFileName($file);    
-        
-        if($fileDate -ne $null -and $fileDate -gt $lastDeploymentDate)
+        foreach($file in Get-ChildItem $dbChangesDir)
         {
-            $result.Add($file.FullName)
+            $fileDate = getDateFromFileName($file);    
+            
+            if($fileDate -ne $null -and $fileDate -gt $lastDeploymentDate)
+            {
+                $result.Add($file.FullName)
+            }
         }
     }
 
@@ -28,7 +32,8 @@ param([Parameter(mandatory=$true, ValueFromPipeline=$true)]$lastDeploymentDate)
 
 
 function getDBChangeScripts(){
-    return $(getLastSuccessfulDeploymentCommitDate | getDBChangeScriptsSince)
+    param($lastSuccessfulDeploymentCommit)
+    return $(getLastSuccessfulDeploymentCommitDate  $lastSuccessfulDeploymentCommit | getDBChangeScriptsSince)
 }
 
 function getDateFromFileName($fileName)
