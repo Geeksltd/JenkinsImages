@@ -1,1 +1,1 @@
-geeksltd/jenkins-windows:1.16
+geeksltd/jenkins-windows:1.17

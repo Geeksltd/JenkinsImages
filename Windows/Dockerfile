@@ -70,9 +70,8 @@ RUN dotnet tool install -g Amazon.ECS.Tools --version 3.0.0
 #Install SqlServer cmd
 RUN powershell -Command "Install-Module -Name SqlServer -Force"
 
-# Copy powershell scripts
-ENV POWERSHELL_HOME C:\\Windows\\System32\\WindowsPowerShell\\v1.0
-COPY Powershell $POWERSHELL_HOME
+COPY Powershell c:\\Windows\\SysWOW64\\WindowsPowerShell\\v1.0
+COPY Powershell c:\\Windows\\System32\\WindowsPowerShell\\v1.0
 
 # The following environmnet variables should be provided at runtime.
 #DOCKER_HOST
