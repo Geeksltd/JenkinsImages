@@ -1,1 +1,1 @@
-geeksltd/jenkins-windows:1.19
+geeksltd/jenkins-windows:1.20
