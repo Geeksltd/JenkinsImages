@@ -7,14 +7,14 @@ function registerNewTaskRevision()
         [System.Collections.Hashtable]$environmentVariables
         )
     
-    $taskinfo= aws ecs describe-task-definition --task-definition $taskName --region $region --profile admin-uat | ConvertFrom-Json;
+    $taskinfo= aws ecs describe-task-definition --task-definition $taskName --region $region | ConvertFrom-Json;
     $newTaskDefinition=$taskinfo.taskDefinition[0] | Select-Object -Property * -ExcludeProperty status,compatibilities,taskDefinitionArn,requiresAttributes,revision;
     $newTaskDefinition.containerDefinitions[0].image=$newImage;   
     $envsDic = ConvertToEnvironmentVariables($environmentVariables);    
     $newTaskDefinition.containerDefinitions[0].environment=$envsDic;
     $jsonArg = $newTaskDefinition | ConvertTo-Json -Depth 10;
 
-    $newTaskDefinition = aws ecs register-task-definition --region $region --family $taskName --cli-input-json $($jsonArg.Replace("`"","\`"")) --profile admin-uat
+    $newTaskDefinition = aws ecs register-task-definition --region $region --family $taskName --cli-input-json $($jsonArg.Replace("`"","\`""))
     return ($newTaskDefinition | ConvertFrom-Json).taskDefinition.taskDefinitionArn;
 }
 
