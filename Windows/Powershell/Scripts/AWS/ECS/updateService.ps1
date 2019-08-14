@@ -7,5 +7,5 @@ function updateService()
         [string]$region=$env:REGION
         )
 
-    aws ecs update-service --cluster $clusterName --service $serviceName --task-definition $newTaskDefinitionArn --region $region
+    aws ecs update-service --profile $env:AWS_PROFILE --cluster $clusterName --service $serviceName --task-definition $newTaskDefinitionArn --region $region
 }

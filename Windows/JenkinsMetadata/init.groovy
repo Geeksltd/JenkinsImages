@@ -36,7 +36,7 @@ def scm = new GitSCM(System.getenv("PROJECT_JENKINSFILE_GIT_URL"))
 scm.branches = [new BranchSpec("*/master")];
 def flowDefinition = new org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition(scm, System.getenv("PROJECT_JENKINSFILE_NAME"))
 def parent = Jenkins.instance
-def job = new org.jenkinsci.plugins.workflow.job.WorkflowJob(parent, System.getenv("PROJECT"))
+def job = new org.jenkinsci.plugins.workflow.job.WorkflowJob(parent, System.getenv("REPOSITORY_NAME") + "_" + System.getenv("BRANCH"))
 job.definition = flowDefinition
 
 parent.reload()
