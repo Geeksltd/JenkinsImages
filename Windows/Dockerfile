@@ -1,7 +1,7 @@
 FROM jenkins/jenkins:lts as plugins
 
 #get rid of admin password setup
-ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
+ENV JAVA_OPTS="-Dpermissive-script-security.enabled=true -Djenkins.install.runSetupWizard=false"
 
 #automatically installing all plugins
 COPY plugins.txt plugins.txt
@@ -79,6 +79,7 @@ COPY Powershell c:\\Windows\\SysWOW64\\WindowsPowerShell\\v1.0
 #PROJECT_JENKINSFILE_NAME
 #BRANCH 
 #PROJECT
+#REPOSITORY_NAME
 #JENKINS_ADMIN_PASSWORD
 #PROJECT_REPOSITORY_URL
 #PROJECT_REPOSITORY_USERNAME
@@ -89,7 +90,7 @@ COPY Powershell c:\\Windows\\SysWOW64\\WindowsPowerShell\\v1.0
 #DATABASE_SERVER
 #DATABASE_MASTER_USERNAME
 #DATABASE_MASTER_PASSWORD
-
+ENV JAVA_ARGS="-Xmx256m" 
 EXPOSE 8080
 EXPOSE 5000
 CMD java -jar c:\\jenkins\\jenkins.war
