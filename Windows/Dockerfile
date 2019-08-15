@@ -24,6 +24,9 @@ RUN dotnet tool install -g replace-in-file
 # accelerate-package-restore
 RUN dotnet tool install -g accelerate-package-restore
 
+# update-local-nuget-cache
+RUN dotnet tool install -g update-local-nuget-cache
+
 # Kubectl
 RUN choco install -g kubernetes-cli -y && \
 	setx PATH "%CHOCOLATEY_LIB%\\kubernetes-cli\\tools\\kubernetes\\client\\;%PATH%;";
@@ -66,6 +69,9 @@ RUN powershell -Command "Install-Module -Name AWSPowerShell -Force"
 
 # Install AWS.ECS.Tools
 RUN dotnet tool install -g Amazon.ECS.Tools --version 3.0.0
+
+# npm
+RUN choco install nuget.commandline -y
 
 #Install SqlServer cmd
 RUN powershell -Command "Install-Module -Name SqlServer -Force"
