@@ -7,7 +7,9 @@ ENV JAVA_OPTS="-Dpermissive-script-security.enabled=true -Djenkins.install.runSe
 COPY plugins.txt plugins.txt
 RUN /usr/local/bin/install-plugins.sh < plugins.txt
 
-FROM microsoft/windowsservercore
+FROM microsoft/dotnet-framework:4.7.2-sdk-windowsservercore-ltsc2016
+# Executed as cmd /S /C echo hello
+SHELL ["cmd", "/S", "/C"]
 
 # Install Chocolatey
 ENV CHOCOLATEY_LIB "%ProgramData%\\chocolatey\\bin"
