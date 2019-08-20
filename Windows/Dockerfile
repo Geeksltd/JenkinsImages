@@ -53,12 +53,6 @@ ENV JENKINS_HOME c:\\jenkins\\jenkins
 ENV jenkins.install.state INITIAL_SETUP_COMPLETED
 ENV JAVA_OPTS="-Dpermissive-script-security.enabled=true" 
 
-RUN mkdir %JENKINS_HOME%
-RUN powershell -Command "wget -Uri http://mirrors.jenkins.io/war/latest/jenkins.war -UseBasicParsing -OutFile c:\\jenkins\jenkins.war"
-COPY --from=plugins /usr/share/jenkins/ref/plugins/ $JENKINS_HOME\\plugins
-COPY JenkinsMetadata\\config.xml .jenkins\\config.xml
-COPY JenkinsMetadata\\init.groovy $JENKINS_HOME\\init.groovy
-
 # git
 RUN choco install -g git -y && \
 	setx PATH "%PROGRAMFILES%\\git\\bin\\;%PATH%;";
@@ -79,6 +73,12 @@ RUN powershell -Command "Install-Module -Name SqlServer -Force"
 COPY Powershell c:\\Windows\\System32\\WindowsPowerShell\\v1.0
 COPY Powershell c:\\Windows\\SysWOW64\\WindowsPowerShell\\v1.0
 
+RUN mkdir %JENKINS_HOME%
+RUN powershell -Command "wget -Uri http://mirrors.jenkins.io/war/latest/jenkins.war -UseBasicParsing -OutFile c:\\jenkins\jenkins.war"
+COPY --from=plugins /usr/share/jenkins/ref/plugins/ $JENKINS_HOME\\plugins
+COPY JenkinsMetadata\\config.xml .jenkins\\config.xml
+COPY JenkinsMetadata\\init.groovy $JENKINS_HOME\\init.groovy
+
 # The following environmnet variables should be provided at runtime.
 #DOCKER_HOST
 #PROJECT_JENKINSFILE_GIT_URL
@@ -86,13 +86,22 @@ COPY Powershell c:\\Windows\\SysWOW64\\WindowsPowerShell\\v1.0
 #BRANCH 
 #PROJECT
 #REPOSITORY_NAME
-#JENKINS_ADMIN_PASSWORD
 #PROJECT_REPOSITORY_URL
 #PROJECT_REPOSITORY_USERNAME
 #PROJECT_REPOSITORY_PASSWORD
+
+### Google Auth
+#GOOGLE_APP_CLIENT_ID
+#GOOGLE_APP_SECRET
+#GOOGLE_ACCOUNT_DOMAIN
+#AUTHORIZATION_SYNC_JENKINSFILE_NAME
+
+### ECS
 #ECS_CLUSTER_NAME
 #PROJECT_TASK_FAMILY_NAME
 #PROJECT_ECS_SERVICE_NAME
+
+### Database
 #DATABASE_SERVER
 #DATABASE_MASTER_USERNAME
 #DATABASE_MASTER_PASSWORD

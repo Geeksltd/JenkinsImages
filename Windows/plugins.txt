@@ -86,3 +86,4 @@ google-login
 permissive-script-security
 extended-choice-parameter
 extensible-choice-parameter
+icon-shim

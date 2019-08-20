@@ -20,24 +20,33 @@ def instance = Jenkins.getInstance()
 
 instance.setInstallState(InstallState.INITIAL_SETUP_COMPLETED)
 
-// Add the admin user
-def hudsonRealm = new HudsonPrivateSecurityRealm(false)
-hudsonRealm.createAccount('admin', System.getenv("JENKINS_ADMIN_PASSWORD"));
-instance.setSecurityRealm(hudsonRealm)
+// Set up google
+def env = System.getenv()
 
-def strategy = new hudson.security.GlobalMatrixAuthorizationStrategy()
-strategy.add(Jenkins.ADMINISTER, "admin")
+def clientId = env["GOOGLE_APP_CLIENT_ID"]
+def clientSecret = env["GOOGLE_APP_SECRET"]
+def domain = env["GOOGLE_ACCOUNT_DOMAIN"]
+
+def googleRealm = new GoogleOAuth2SecurityRealm(clientId, clientSecret, domain)
+instance.setSecurityRealm(googleRealm)
+
+def strategy = new GlobalMatrixAuthorizationStrategy()
+strategy.add(Jenkins.ADMINISTER, "matt@geeks.ltd.uk")
+strategy.add(Jenkins.ADMINISTER, "paymon@geeks.ltd.uk")
 instance.setAuthorizationStrategy(strategy)
-
 instance.save()
 
 // Add the project job
 def scm = new GitSCM(System.getenv("PROJECT_JENKINSFILE_GIT_URL"))
 scm.branches = [new BranchSpec("*/master")];
-def flowDefinition = new org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition(scm, System.getenv("PROJECT_JENKINSFILE_NAME"))
-def parent = Jenkins.instance
-def job = new org.jenkinsci.plugins.workflow.job.WorkflowJob(parent, System.getenv("REPOSITORY_NAME") + "_" + System.getenv("BRANCH"))
-job.definition = flowDefinition
+def jobFlowDefinition = new org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition(scm, System.getenv("PROJECT_JENKINSFILE_NAME"))
+def job = new org.jenkinsci.plugins.workflow.job.WorkflowJob(instance, System.getenv("REPOSITORY_NAME") + "_" + System.getenv("BRANCH"))
+job.definition = jobFlowDefinition
+
+// Add the authorization sync job
+def authSyncJob = new org.jenkinsci.plugins.workflow.job.WorkflowJob(instance, "Authorization sync")
+def authSyncJobFlowDefinition = new org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition(scm, System.getenv("AUTHORIZATION_SYNC_JENKINSFILE_NAME"))
+authSyncJob.definition = authSyncJobFlowDefinition
 
 parent.reload()
 
