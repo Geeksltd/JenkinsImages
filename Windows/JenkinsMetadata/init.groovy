@@ -17,41 +17,41 @@ import jenkins.install.InstallState;
 
 print "Started initialization from init.groovy"
 def instance = Jenkins.getInstance()
+def embededJenkinsFile = System.getenv("EMBEDED_JENKINSFILE")?.toBoolean() ?: false;
+def jenkinsfileBranch = "master";
 
 instance.setInstallState(InstallState.INITIAL_SETUP_COMPLETED)
 
-// Set up google
-def env = System.getenv()
+def hudsonRealm = new HudsonPrivateSecurityRealm(false)
+hudsonRealm.createAccount('admin', System.getenv("JENKINS_ADMIN_PASSWORD"));
+instance.setSecurityRealm(hudsonRealm)
 
-def clientId = env["GOOGLE_APP_CLIENT_ID"]
-def clientSecret = env["GOOGLE_APP_SECRET"]
-def domain = env["GOOGLE_ACCOUNT_DOMAIN"]
-
-def googleRealm = new GoogleOAuth2SecurityRealm(clientId, clientSecret, domain)
-instance.setSecurityRealm(googleRealm)
-
-def strategy = new GlobalMatrixAuthorizationStrategy()
-strategy.add(Jenkins.ADMINISTER, "matt@geeks.ltd.uk")
-strategy.add(Jenkins.ADMINISTER, "paymon@geeks.ltd.uk")
+def strategy = new hudson.security.GlobalMatrixAuthorizationStrategy()
+strategy.add(Jenkins.ADMINISTER, "admin")
 instance.setAuthorizationStrategy(strategy)
+
 instance.save()
 
-// Add the project job
+// Add job git credentials
+def repo_credentials = (Credentials) new UsernamePasswordCredentialsImpl(CredentialsScope.GLOBAL,System.getenv("REPOSITORY_CREDENTIALS"), "Used to download the project from its repository", System.getenv("PROJECT_REPOSITORY_USERNAME"),System.getenv("PROJECT_REPOSITORY_PASSWORD"))
+SystemCredentialsProvider.getInstance().getStore().addCredentials(Domain.global(), repo_credentials)
+
+// Add Jenkinsfile
 def scm = new GitSCM(System.getenv("PROJECT_JENKINSFILE_GIT_URL"))
-scm.branches = [new BranchSpec("*/master")];
-def jobFlowDefinition = new org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition(scm, System.getenv("PROJECT_JENKINSFILE_NAME"))
+
+if(embededJenkinsFile)
+{
+	// Add the project job
+	scm.userRemoteConfigs = GitSCM.createRepoList(System.getenv("PROJECT_JENKINSFILE_GIT_URL"),repo_credentials.id)
+	jenkinsfileBranch = System.getenv("BRANCH");
+}
+
+scm.branches = [new BranchSpec("*/"+jenkinsfileBranch)];
 def job = new org.jenkinsci.plugins.workflow.job.WorkflowJob(instance, System.getenv("REPOSITORY_NAME") + "_" + System.getenv("BRANCH"))
-job.definition = jobFlowDefinition
+job.definition = new org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition(scm, System.getenv("PROJECT_JENKINSFILE_NAME"))
 
-// Add the authorization sync job
-def authSyncJob = new org.jenkinsci.plugins.workflow.job.WorkflowJob(instance, "Authorization sync")
-def authSyncJobFlowDefinition = new org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition(scm, System.getenv("AUTHORIZATION_SYNC_JENKINSFILE_NAME"))
-authSyncJob.definition = authSyncJobFlowDefinition
-
-parent.reload()
+instance.reload()
 
 // Disable security for running scripts.
 PermissiveWhitelist.MODE = Mode.NO_SECURITY
 print "Finished initialization from init.groovy"
-
-
