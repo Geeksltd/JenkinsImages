@@ -1,6 +1,7 @@
 import jenkins.*
 import hudson.*
 import com.cloudbees.plugins.credentials.*
+import com.cloudbees.plugins.credentials.impl.*;
 import com.cloudbees.plugins.credentials.common.*
 import com.cloudbees.plugins.credentials.domains.*
 import com.cloudbees.jenkins.plugins.sshcredentials.impl.*
