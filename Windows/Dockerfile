@@ -18,7 +18,7 @@ RUN powershell -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "ie
 
 # .net core sdk
 RUN choco install dotnetcore-sdk -y && \
-    setx PATH "%ProgramData%\\dotnet\\;%PATH%;";
+    setx PATH "%USERPROFILE%\\dotnet\\tools;%ProgramData%\\dotnet\\;%PATH%;";     
 
 # replace-in-file
 RUN dotnet tool install -g replace-in-file
