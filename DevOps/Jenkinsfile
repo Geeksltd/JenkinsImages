@@ -1,0 +1,62 @@
+import com.cloudbees.plugins.credentials.impl.*;
+import com.cloudbees.plugins.credentials.*;
+import com.cloudbees.plugins.credentials.domains.*;
+
+def RunPowershell(cmd)
+{
+    def script ="powershell -ExecutionPolicy ByPass -command \""+cmd+"\"";
+       
+    bat script
+}
+
+pipeline 
+{
+    environment 
+    {   
+        PROJECT_REPOSITORY_URL = "$PROJECT_REPOSITORY_URL"
+        PROJECT_REPOSITORY_BRANCH = "$BRANCH"                
+        DOCKER_USERNAME = "$DOCKER_USERNAME"
+        DOCKER_PASSWORD = "$DOCKER_PASSWORD"
+    }
+    agent any
+    stages
+  {    
+            stage('Clone source') 
+            {
+                steps
+                {
+                    script
+                        {           
+                           git url: PROJECT_REPOSITORY_URL, branch: PROJECT_REPOSITORY_BRANCH
+                        }
+                }       
+            }       
+            stage('Build') 
+            {
+                steps
+                {
+                    script
+                        {   
+                          dir("Windows")
+                          {
+                            RunPowershell("call ./Build.Dockerfile.ps1")
+                          }
+                        }
+                }               
+            }            
+            stage('Publish') 
+            {
+                steps
+                {
+                    script
+                        {   
+                          dir("Windows")
+                          {
+                            RunPowershell("docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD")
+                            RunPowershell("call ./Publish.DockerImage.ps1")
+                          }
+                        }
+                }               
+            }
+    }       
+}
