@@ -39,7 +39,7 @@ pipeline
                         {   
                           dir("Windows")
                           {
-                            RunPowershell("call ./Build.Dockerfile.ps1")
+                            RunPowershell("./Build.Dockerfile.ps1")
                           }
                         }
                 }               
@@ -53,7 +53,7 @@ pipeline
                           dir("Windows")
                           {
                             RunPowershell("docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD")
-                            RunPowershell("call ./Publish.DockerImage.ps1")
+                            RunPowershell("./Publish.DockerImage.ps1")
                           }
                         }
                 }               
